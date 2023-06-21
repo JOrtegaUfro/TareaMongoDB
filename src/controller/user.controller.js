@@ -1,15 +1,20 @@
-function createUser(req, res){
-    const name = req.body.name;
-    const email= req.body.email;
-    const dni = req.body.dni;
-    const password = req.body.password;
-    const user = {
-        "nombre": name,
-        "email": email,
-        "dni": dni,
-        "password": password
-    };
-    return res.send({user});
+import User from "../models/user.model.js"
+
+
+async function createUser(req, res){
+ try{
+    const createdUser = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        dni: req.body.dni,
+});
+await createdUser.save();
+return res.status(201).send({response : createdUser});
+}catch(error){
+    console.log(error);
+    return res.status(500).send({error});
+}
 }
 
 

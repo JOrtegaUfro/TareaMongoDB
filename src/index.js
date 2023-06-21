@@ -3,6 +3,7 @@ import userRouter from './routes/users.routes.js';
 import authRouter from './routes/auth.routers.js';
 import messageRouter from './routes/messages.routes.js';
 import { PORT } from './configs/environments.js'
+import connectDB from './configs/mongo.js';
 
 
 const app = express();
@@ -17,6 +18,15 @@ app.use("/users",userRouter);
 app.use("/messages",messageRouter);
 
 
-app.listen(PORT, () => {
-  console.log(`Iniciado en el puerto ${PORT}`);
-});
+async function startSever() {
+	const isConnected = await connectDB();
+	if (isConnected) {
+		app.listen(PORT, () => {
+			console.log(`Server started on ${PORT}`);
+		});
+	} else {
+		process.exit();
+	}
+}
+
+startSever();
