@@ -12,4 +12,23 @@ function createUser(req, res){
     return res.send({user});
 }
 
-export {createUser}
+
+function loginUser(req, res){
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = {
+        "email": email,
+        "password": password
+    };
+    return res.send({user});
+}
+
+function listarUsers(req, res){
+    res.send('usuarios');
+}
+
+function mensajeUsuario(req,res){
+    return res.status(200).json({todo: "ok"});
+}
+
+export {createUser, loginUser, listarUsers, mensajeUsuario}
