@@ -1,13 +1,16 @@
 import User from "../models/user.model.js";
 import Message from '../models/message.model.js';
+import bcrypt from "bcrypt";
 
 
 async function createUser(req, res){
+const password = req.body.password;
+const encryptedPassword = bcrypt.hashSync(password, 10);
  try{
     const createdUser = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password,
+        password: encryptedPassword,
         dni: req.body.dni,
 });
 await createdUser.save();
@@ -20,16 +23,24 @@ return res.status(201).send({response : createdUser});
 
 
 async function loginUser(req, res){
-    const { name, password } = req.body;
+    const name= req.body.name;
+    const password = req.body.password;
     const users = await User.find().populate("name");
-    const matchUser = users.find(user => user.name === name && user.password === password);
+    
+    const matchUser = users.find(user => user.name === name);
 
     if(matchUser){
-        return res.status(200).send({todo : "ok"});
+        const isMatch = await bcrypt.compare(password, matchUser.password);
+        if(isMatch){
+        return res.status(200).send({matchUser});
+        }else{
+            return res.status(401).send({error : "Usuario o contraseña incorrectos"});
+        }
     }else{
         return res.status(401).send({error : "Usuario o contraseña incorrectos"});
     }
 }
+
 
 async function listarUsers(req, res){
     try{
