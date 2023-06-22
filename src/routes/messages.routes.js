@@ -4,7 +4,7 @@ const router = Router();
 
 router.post('', createMessage);
 
-router.get('/:messageId', deleteMessage);
+router.delete('/:messageId', deleteMessage);
 
 
 export default router;
