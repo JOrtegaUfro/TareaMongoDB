@@ -1,3 +1,3 @@
 # TareaMongoDB
-#MONGO_URI para direccion a mongodb Atlas 
-#y PORT para el puerto
+MONGO_URI para direccion a mongodb Atlas 
+y PORT para el puerto
