@@ -13,8 +13,15 @@ const encryptedPassword = bcrypt.hashSync(password, 10);
         password: encryptedPassword,
         dni: req.body.dni,
 });
-await createdUser.save();
-return res.status(201).send({response : createdUser});
+const users = await User.find().populate("name");
+const matchUser = users.find(user => user.name === createdUser.name||createdUser.email === user.email||createdUser.dni === user.dni);
+if(matchUser){
+    return res.status(400).send({error : "Error falta campo o ya los datos ya fueron utilizados para crear un usuario"});
+}else{
+    await createdUser.save();
+    return res.status(201).send({response : createdUser});
+}
+
 }catch(error){
     console.log(error);
     return res.status(500).send({error});
@@ -26,7 +33,7 @@ async function loginUser(req, res){
     const name= req.body.name;
     const password = req.body.password;
     const users = await User.find().populate("name");
-    
+    try{
     const matchUser = users.find(user => user.name === name);
 
     if(matchUser){
@@ -39,6 +46,9 @@ async function loginUser(req, res){
     }else{
         return res.status(401).send({error : "Usuario o contraseña incorrectos"});
     }
+}catch(error){
+    return res.status(500).send({error});
+}
 }
 
 
